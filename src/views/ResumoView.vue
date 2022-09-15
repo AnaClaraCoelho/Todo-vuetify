@@ -1,30 +1,13 @@
 <template>
+  <!-- App.vue -->
+
   <v-app>
-    <v-app-bar app>
-      <!-- -->
-      <v-toolbar
-        max-height="100%"
-        max-width="100%"
-        dark
-        src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
-      >
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
-
-        <v-toolbar-title>Vuetify</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon>
-          <v-icon>mdi-export</v-icon>
-        </v-btn>
-      </v-toolbar>
-    </v-app-bar>
-
     <!-- Sizes your content based upon application components -->
-    <v-main>
-      <!-- Provides the application the proper gutter -->
-      <v-container>
-        <!-- If using vue-router -->
+
+    <!-- Provides the application the proper gutter -->
+    <v-container style="height: 10%" fluid>
+      <!-- If using vue-router -->
+      <div>
         <v-card max-width="100%" max-height="100%" class="mx-auto">
           <v-system-bar color="blue darken-1" dark></v-system-bar>
 
@@ -52,7 +35,9 @@
                   >
 
                   <v-card-actions>
-                    <v-btn text @click="novaTarefa"> Nova anotação </v-btn>
+                    <v-btn outlined rounded @click="novaTarefa">
+                      Nova anotação
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -69,36 +54,47 @@
                       <v-card-subtitle v-text="item.artist"></v-card-subtitle>
 
                       <v-card-actions>
-                        <v-btn
-                          v-if="item.artist === 'Ellie Goulding'"
-                          class="ml-2 mt-3"
-                          fab
-                          icon
-                          height="40px"
-                          right
-                          width="40px"
-                        >
-                          <v-icon>mdi-play</v-icon>
-                        </v-btn>
-
-                        <v-btn v-else class="ml-2 mt-5" outlined rounded small>
+                        <v-btn class="ml-2 mt-5" outlined rounded small>
                           Visualizar
                         </v-btn>
                       </v-card-actions>
                     </div>
-
-                    <v-avatar class="ma-3" size="125" tile>
-                      <v-img :src="item.src"></v-img>
-                    </v-avatar>
                   </div>
                 </v-card>
               </v-col>
             </v-row>
           </v-container>
+          <div>
+            <v-card
+              v-for="task in tasks"
+              :key="task.id"
+              class="mx-auto"
+              max-width="344"
+              outlined
+            >
+              <v-list-item three-line>
+                <v-list-item-content>
+                  <div class="text-overline mb-4">{{ task.project }}</div>
+                  <v-list-item-title class="text-h5 mb-1">
+                    {{ task.title }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-card-actions>
+                <v-btn outlined rounded text @click="editTask(task)">
+                  Editar
+                </v-btn>
+                <v-btn outlined rounded text @click="removeTask(task)">
+                  Deletar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </div>
         </v-card>
-        <router-view></router-view>
-      </v-container>
-    </v-main>
+      </div>
+      <router-view></router-view>
+    </v-container>
 
     <v-footer app>
       <!-- -->
@@ -107,6 +103,7 @@
 </template>
 
 <script>
+import TasksAPi from "@/TasksApi";
 export default {
   data: () => ({
     value: 1,
@@ -123,12 +120,28 @@ export default {
           "Aquelas metas que você já bateu e sente o mesmo orgulho que nós 🥺",
       },
     ],
+    tasks: [],
   }),
   methods: {
     novaTarefa() {
-      this.$router.push("/addtarefa");
+      this.$router.push({ name: "addtarefa" });
     },
+    getTasks() {
+      TasksAPi.getTasks((data) => {
+        this.tasks = data;
+      });
+    },
+    removeTask(task) {
+      TasksAPi.deleteTasks(task).then(() => {
+        this.getTasks();
+      });
+    },
+    editTask(task) {
+      this.$router.push({ name: "edit", params: { id: task.id, task: task } });
+    },
+  },
+  created() {
+    this.getTasks();
   },
 };
 </script>
-Footer

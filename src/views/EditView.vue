@@ -68,13 +68,8 @@
         <v-btn color="error" class="mr-4" @click="voltar"> Voltar </v-btn>
 
         <v-btn color="warning" @click="reset" class="mr-4"> Limpar </v-btn>
-        <v-btn
-          :disabled="false"
-          color="success"
-          class="mr-4"
-          @click="createTask"
-        >
-          Salvar
+        <v-btn :disabled="false" color="success" class="mr-4" @click="editTask">
+          Editar
         </v-btn>
       </v-form>
     </v-layout>
@@ -84,7 +79,6 @@
 <script>
 import TasksApi from "@/TasksApi";
 export default {
-  name: "HomeView",
   data: () => ({
     valid: true,
     titleRules: [(v) => !!v || "É preciso escrever um titulo!"],
@@ -118,22 +112,17 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     },
-    createTask() {
-      TasksApi.addTasks(this.newTask);
-      this.$router.push({ name: "resumo" });
-    },
+
     voltar() {
       this.$router.push({ name: "resumo" });
     },
+    editTask() {
+      TasksApi.updateTask(this.$route.params.id, this.newTask);
+      this.$router.push({ name: "resumo" });
+    },
+  },
+  created() {
+    this.newTask = this.$route.params.task || "";
   },
 };
 </script>
-<style scoped>
-.margem {
-  margin-right: 15px;
-  margin-top: 20px;
-}
-.criar-tarefa {
-  margin-right: 50%;
-}
-</style>

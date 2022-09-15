@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-parallax
-      height="1010"
+      height="1000"
       dark
       src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
     >
@@ -19,29 +19,50 @@
               <v-col cols="1" sm="4" md="4">
                 <v-card class="pa-2" outlined tile
                   ><v-text-field
+                    v-model="user"
+                    :error-messages="nameErrors"
+                    :counter="10"
                     label="Usuario"
+                    required
+                    @input="$v.user.$touch()"
+                    @blur="$v.user.$touch()"
                     placeholder="Insira seu usuario"
-                  />
+                    prepend-icon="mdi-account-circle"
+                  ></v-text-field>
                 </v-card>
               </v-col>
               <v-col cols="6" md="4">
                 <v-card class="pa-2" outlined tile
                   ><v-text-field
-                    type="password"
+                    v-model="password"
+                    :error-messages="passwordErrors"
+                    @input="$v.password.$touch()"
+                    @blur="$v.password.$touch()"
+                    :type="showPassword ? 'text' : 'password'"
                     label="Senha"
                     placeholder="Insira sua senha"
+                    prepend-icon="mdi-lock"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
+                    required
                   />
                 </v-card>
               </v-col>
             </v-row>
             <v-row align="center" justify="space-around">
               <v-layout justify-center>
-                <v-btn class="btn-login" color="primary" @click="vaiParaResumo">
+                <v-btn
+                  class="btn-login"
+                  color="primary"
+                  rounded
+                  @click="submit"
+                >
                   Login
                 </v-btn>
                 <v-btn
                   class="justify-center"
                   color="primary"
+                  rounded
                   @click="vaiParaRegistro"
                 >
                   Registrar-se
@@ -56,18 +77,49 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+import { required, maxLength, minLength } from "vuelidate/lib/validators";
 export default {
+  mixins: [validationMixin],
   name: "LoginView",
+  validations: {
+    user: { required, maxLength: maxLength(10) },
+    password: { required, minLength: minLength(8) },
+  },
   data: () => ({
+    password: "",
+    user: "",
     loading: false,
     selection: 1,
+    showPassword: false,
   }),
+  computed: {
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.user.$dirty) return errors;
+      !this.$v.user.maxLength &&
+        errors.push("Username must be at most 10 characters long");
+      !this.$v.user.required && errors.push("Username is required.");
+      return errors;
+    },
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.minLength &&
+        errors.push("Password must be at most 8 characters long");
+      !this.$v.password.required && errors.push("Password is required.");
+      return errors;
+    },
+  },
   methods: {
     vaiParaRegistro() {
-      this.$router.push("/registro");
+      this.$router.push({ name: "registro" });
     },
-    vaiParaResumo() {
-      this.$router.push("/resumo");
+    submit() {
+      this.$v.$touch();
+      if (!this.user == "" && !this.password == "") {
+        this.$router.push({ name: "resumo" });
+      }
     },
   },
 };
