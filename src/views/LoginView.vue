@@ -15,60 +15,62 @@
           </div>
 
           <v-container>
-            <v-row no-gutters class="caixa-login">
-              <v-col cols="1" sm="4" md="4">
-                <v-card class="pa-2" outlined tile
-                  ><v-text-field
-                    v-model="user"
-                    :error-messages="nameErrors"
-                    :counter="10"
-                    label="Usuario"
-                    required
-                    @input="$v.user.$touch()"
-                    @blur="$v.user.$touch()"
-                    placeholder="Insira seu usuario"
-                    prepend-icon="mdi-account-circle"
-                  ></v-text-field>
-                </v-card>
-              </v-col>
-              <v-col cols="6" md="4">
-                <v-card class="pa-2" outlined tile
-                  ><v-text-field
-                    v-model="password"
-                    :error-messages="passwordErrors"
-                    @input="$v.password.$touch()"
-                    @blur="$v.password.$touch()"
-                    :type="showPassword ? 'text' : 'password'"
-                    label="Senha"
-                    placeholder="Insira sua senha"
-                    prepend-icon="mdi-lock"
-                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                    @click:append="showPassword = !showPassword"
-                    required
-                  />
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row align="center" justify="space-around">
-              <v-layout justify-center>
-                <v-btn
-                  class="btn-login"
-                  color="primary"
-                  rounded
-                  @click="submit"
-                >
-                  Login
-                </v-btn>
-                <v-btn
-                  class="justify-center"
-                  color="primary"
-                  rounded
-                  @click="vaiParaRegistro"
-                >
-                  Registrar-se
-                </v-btn>
-              </v-layout>
-            </v-row>
+            <form action="">
+              <v-row no-gutters class="caixa-login">
+                <v-col cols="1" sm="4" md="4">
+                  <v-card class="pa-2" outlined tile
+                    ><v-text-field
+                      v-model="user"
+                      :error-messages="nameErrors"
+                      :counter="10"
+                      label="Usuario"
+                      required
+                      @input="$v.user.$touch()"
+                      @blur="$v.user.$touch()"
+                      placeholder="Insira seu usuario"
+                      prepend-icon="mdi-account-circle"
+                    ></v-text-field>
+                  </v-card>
+                </v-col>
+                <v-col cols="6" md="4">
+                  <v-card class="pa-2" outlined tile
+                    ><v-text-field
+                      v-model="password"
+                      :error-messages="passwordErrors"
+                      @input="$v.password.$touch()"
+                      @blur="$v.password.$touch()"
+                      :type="showPassword ? 'text' : 'password'"
+                      label="Senha"
+                      placeholder="Insira sua senha"
+                      prepend-icon="mdi-lock"
+                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                      @click:append="showPassword = !showPassword"
+                      required
+                    />
+                  </v-card>
+                </v-col>
+              </v-row>
+              <v-row align="center" justify="space-around">
+                <v-layout justify-center>
+                  <v-btn
+                    class="btn-login"
+                    color="primary"
+                    rounded
+                    @click="submit"
+                  >
+                    Login
+                  </v-btn>
+                  <v-btn
+                    class="justify-center"
+                    color="primary"
+                    rounded
+                    @click="vaiParaRegistro"
+                  >
+                    Registrar-se
+                  </v-btn>
+                </v-layout>
+              </v-row>
+            </form>
           </v-container>
         </v-col>
       </v-row>
@@ -98,8 +100,8 @@ export default {
       const errors = [];
       if (!this.$v.user.$dirty) return errors;
       !this.$v.user.maxLength &&
-        errors.push("Username must be at most 10 characters long");
-      !this.$v.user.required && errors.push("Username is required.");
+        errors.push("Usuário deve ter, no mínimo 10 caracteres");
+      !this.$v.user.required && errors.push("Usuário necessário.");
       return errors;
     },
     passwordErrors() {

@@ -54,7 +54,13 @@
                       <v-card-subtitle v-text="item.artist"></v-card-subtitle>
 
                       <v-card-actions>
-                        <v-btn class="ml-2 mt-5" outlined rounded small>
+                        <v-btn
+                          class="ml-2 mt-5"
+                          outlined
+                          rounded
+                          small
+                          @click="listTasks(item.name)"
+                        >
                           Visualizar
                         </v-btn>
                       </v-card-actions>
@@ -64,33 +70,6 @@
               </v-col>
             </v-row>
           </v-container>
-          <div>
-            <v-card
-              v-for="task in tasks"
-              :key="task.id"
-              class="mx-auto"
-              max-width="344"
-              outlined
-            >
-              <v-list-item three-line>
-                <v-list-item-content>
-                  <div class="text-overline mb-4">{{ task.project }}</div>
-                  <v-list-item-title class="text-h5 mb-1">
-                    {{ task.title }}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-
-              <v-card-actions>
-                <v-btn outlined rounded text @click="editTask(task)">
-                  Editar
-                </v-btn>
-                <v-btn outlined rounded text @click="removeTask(task)">
-                  Deletar
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </div>
         </v-card>
       </div>
       <router-view></router-view>
@@ -103,7 +82,6 @@
 </template>
 
 <script>
-import TasksAPi from "@/TasksApi";
 export default {
   data: () => ({
     value: 1,
@@ -112,12 +90,14 @@ export default {
         color: "#1F7087",
         title: "Favoritos ❤️",
         artist: "Suas anotações preferidas estão aqui 😍",
+        name: "favoritos",
       },
       {
         color: "#952175",
-        title: "Arquivados 📁",
+        title: "Suas Tarefas 📁",
         artist:
           "Aquelas metas que você já bateu e sente o mesmo orgulho que nós 🥺",
+        name: "lista",
       },
     ],
     tasks: [],
@@ -126,22 +106,10 @@ export default {
     novaTarefa() {
       this.$router.push({ name: "addtarefa" });
     },
-    getTasks() {
-      TasksAPi.getTasks((data) => {
-        this.tasks = data;
-      });
+
+    listTasks(name) {
+      this.$router.push({ name: `${name}` });
     },
-    removeTask(task) {
-      TasksAPi.deleteTasks(task).then(() => {
-        this.getTasks();
-      });
-    },
-    editTask(task) {
-      this.$router.push({ name: "edit", params: { id: task.id, task: task } });
-    },
-  },
-  created() {
-    this.getTasks();
   },
 };
 </script>

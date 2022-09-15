@@ -93,6 +93,7 @@ export default {
       title: "",
       project: "",
       dueTo: "",
+      active: false,
     },
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
