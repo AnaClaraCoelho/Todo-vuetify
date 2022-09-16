@@ -45,8 +45,16 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+import { required, maxLength, minLength } from "vuelidate/lib/validators";
 export default {
+  mixins: [validationMixin],
   name: "RegistroView",
+  validations: {
+    usuario: { required, maxLength: maxLength(10) },
+    senha: { required, minLength: minLength(8) },
+    email: { required },
+  },
   data: () => ({
     valid: false,
     usuario: "",

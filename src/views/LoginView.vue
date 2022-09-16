@@ -5,6 +5,16 @@
       dark
       src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"
     >
+      <v-snackbar
+        v-model="snackbar.show"
+        :value="true"
+        absolute
+        left
+        shaped
+        top
+      >
+        {{ snackbar.message }}
+      </v-snackbar>
       <v-row align="center" justify="center">
         <v-col class="text-center" cols="12">
           <h1 class="text-h2 font-weight-thin mb-4">To Do list</h1>
@@ -20,7 +30,7 @@
                 <v-col cols="1" sm="4" md="4">
                   <v-card class="pa-2" outlined tile
                     ><v-text-field
-                      v-model="user"
+                      v-model="username"
                       :error-messages="nameErrors"
                       :counter="10"
                       label="Usuario"
@@ -53,6 +63,7 @@
               <v-row align="center" justify="space-around">
                 <v-layout justify-center>
                   <v-btn
+                    :loading="loading"
                     class="btn-login"
                     color="primary"
                     rounded
@@ -79,36 +90,40 @@
 </template>
 
 <script>
+import AuthApi from "@/api/auth.api.js";
 import { validationMixin } from "vuelidate";
 import { required, maxLength, minLength } from "vuelidate/lib/validators";
 export default {
   mixins: [validationMixin],
   name: "LoginView",
   validations: {
-    user: { required, maxLength: maxLength(10) },
+    username: { required, maxLength: maxLength(10) },
     password: { required, minLength: minLength(8) },
   },
   data: () => ({
-    password: "",
-    user: "",
     loading: false,
+    valid: false,
+    snackbar: {
+      show: false,
+      message: "",
+    },
+    password: "",
+    username: "",
     selection: 1,
     showPassword: false,
   }),
   computed: {
     nameErrors() {
       const errors = [];
-      if (!this.$v.user.$dirty) return errors;
-      !this.$v.user.maxLength &&
+      if (!this.$v.username.$dirty) return errors;
+      !this.$v.username.maxLength &&
         errors.push("Usuário deve ter, no mínimo 10 caracteres");
-      !this.$v.user.required && errors.push("Usuário necessário.");
+      !this.$v.username.required && errors.push("Usuário necessário.");
       return errors;
     },
     passwordErrors() {
       const errors = [];
       if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.minLength &&
-        errors.push("Password must be at most 8 characters long");
       !this.$v.password.required && errors.push("Password is required.");
       return errors;
     },
@@ -118,10 +133,25 @@ export default {
       this.$router.push({ name: "registro" });
     },
     submit() {
-      this.$v.$touch();
-      if (!this.user == "" && !this.password == "") {
-        this.$router.push({ name: "resumo" });
-      }
+      this.loading = true;
+      AuthApi.login(this.username, this.password)
+        .then((user) => {
+          console.log("login ok", user);
+          this.saveLoggedUser(user);
+          this.$router.push({ name: "resumo" });
+        })
+        .catch((error) => {
+          console.log("login falhou", error);
+          this.snackbar.message = "Usuario ou senha invalida";
+          this.snackbar.show = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
+    saveLoggedUser(user) {
+      window.localStorage.setItem("loggedUser", user.id);
+      window.localStorage.setItem("loggedUserToken", user.token);
     },
   },
 };

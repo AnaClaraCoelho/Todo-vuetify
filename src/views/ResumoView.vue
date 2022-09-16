@@ -1,105 +1,57 @@
 <template>
   <!-- App.vue -->
+  <v-app id="inspire">
+    <v-navigation-drawer v-model="drawer" app>
+      <!--  -->
+      <v-list-item-group
+        v-model="group"
+        active-class="blue--text text--accent-4"
+      >
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title @click="novaTarefa"
+            >Nova Anotação ✍️</v-list-item-title
+          >
+        </v-list-item>
 
-  <v-app>
-    <!-- Sizes your content based upon application components -->
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-star</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title @click="listTasks(favoritos)"
+            >Favoritos ❤️</v-list-item-title
+          >
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-folder</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title @click="listTasks(lista)"
+            >Suas Tarefas 📁</v-list-item-title
+          >
+        </v-list-item>
+      </v-list-item-group>
+    </v-navigation-drawer>
 
-    <!-- Provides the application the proper gutter -->
-    <v-container style="height: 10%" fluid>
-      <!-- If using vue-router -->
-      <div>
-        <v-card max-width="100%" max-height="100%" class="mx-auto">
-          <v-system-bar color="blue darken-1" dark></v-system-bar>
+    <v-app-bar app color="blue" dark>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-          <v-app-bar dark color="blue">
-            <v-toolbar-title>Meu Resumo</v-toolbar-title>
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-app-bar>
 
-            <v-spacer></v-spacer>
-
-            <v-btn icon>
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-          </v-app-bar>
-
-          <v-container>
-            <v-row dense>
-              <v-col cols="12">
-                <v-card color="#385F73" dark>
-                  <v-card-title class="text-h5">
-                    Criar uma nova anotação ✍️
-                  </v-card-title>
-
-                  <v-card-subtitle
-                    >Não perca mais nada, anote suas metas e seus deveres, mude
-                    e deixe participarmos da sua evolução.</v-card-subtitle
-                  >
-
-                  <v-card-actions>
-                    <v-btn outlined rounded @click="novaTarefa">
-                      Nova anotação
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-
-              <v-col v-for="(item, i) in items" :key="i" cols="12">
-                <v-card :color="item.color" dark>
-                  <div class="d-flex flex-no-wrap justify-space-between">
-                    <div>
-                      <v-card-title
-                        class="text-h5"
-                        v-text="item.title"
-                      ></v-card-title>
-
-                      <v-card-subtitle v-text="item.artist"></v-card-subtitle>
-
-                      <v-card-actions>
-                        <v-btn
-                          class="ml-2 mt-5"
-                          outlined
-                          rounded
-                          small
-                          @click="listTasks(item.name)"
-                        >
-                          Visualizar
-                        </v-btn>
-                      </v-card-actions>
-                    </div>
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card>
-      </div>
-      <router-view></router-view>
-    </v-container>
-
-    <v-footer app>
-      <!-- -->
-    </v-footer>
+    <v-main>
+      <!--  -->
+    </v-main>
   </v-app>
 </template>
 
 <script>
 export default {
   data: () => ({
+    drawer: null,
     value: 1,
-    items: [
-      {
-        color: "#1F7087",
-        title: "Favoritos ❤️",
-        artist: "Suas anotações preferidas estão aqui 😍",
-        name: "favoritos",
-      },
-      {
-        color: "#952175",
-        title: "Suas Tarefas 📁",
-        artist:
-          "Aquelas metas que você já bateu e sente o mesmo orgulho que nós 🥺",
-        name: "lista",
-      },
-    ],
     tasks: [],
   }),
   methods: {
